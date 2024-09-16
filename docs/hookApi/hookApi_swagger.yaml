@@ -1,0 +1,130 @@
+basePath: /webhook/api
+definitions:
+  content.ContentDto:
+    properties:
+      body:
+        type: string
+      id:
+        type: string
+      title:
+        type: string
+    type: object
+  content.CreateContentRequestDto:
+    properties:
+      body:
+        type: string
+      title:
+        type: string
+    type: object
+  content.CreateContentResponse:
+    properties:
+      id:
+        type: string
+    type: object
+  hook.CreateHookRequest:
+    properties:
+      action:
+        type: string
+      contentId:
+        type: string
+      to:
+        type: string
+    type: object
+  models.CustomError:
+    properties:
+      code:
+        type: integer
+      errorDetail:
+        type: string
+    type: object
+info:
+  contact: {}
+  description: Mehti Umit - WebHook Api
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: Mehti Umit - WebHook Api
+  version: "1.0"
+paths:
+  /v1/content:
+    post:
+      consumes:
+      - application/json
+      description: Create content
+      parameters:
+      - description: Content
+        in: body
+        name: content
+        required: true
+        schema:
+          $ref: '#/definitions/content.CreateContentRequestDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/content.CreateContentResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.CustomError'
+      summary: Create content
+      tags:
+      - Content
+  /v1/content/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get content
+      parameters:
+      - description: Content ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/content.ContentDto'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.CustomError'
+      summary: Get content
+      tags:
+      - Content
+  /v1/hook:
+    post:
+      consumes:
+      - application/json
+      description: Create hook
+      parameters:
+      - description: Create new hook
+        in: body
+        name: createHookRequest
+        required: true
+        schema:
+          $ref: '#/definitions/hook.CreateHookRequest'
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Accepted
+          schema:
+            type: int
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: Create hook
+      tags:
+      - Hook
+schemes:
+- http
+swagger: "2.0"

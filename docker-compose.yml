@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb_container
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    volumes:
+      - mongo-data:/data/db
+
+  redis:
+    image: redis:latest
+    container_name: redis_container
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+
+  hook-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: hook_api_container
+    ports:
+      - "5030:5030"
+    depends_on:
+      - mongodb
+      - redis
+    environment:
+      MONGO_URL: "mongodb://root:example@mongodb_container:27017"
+
+  hook-handler:
+    build:
+      context: .
+      dockerfile: Dockerfile-hookhandler
+    container_name: hook_handler_container
+    depends_on:
+      - mongodb
+      - redis
+    environment:
+      MONGO_URL: "mongodb://root:example@mongodb_container:27017"
+
+volumes:
+  mongo-data:
+  redis-data:
